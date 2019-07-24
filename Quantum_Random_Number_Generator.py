@@ -19,7 +19,7 @@ if __name__=="__main__":
 
      N=10000
 
-     for i in range(N):    
+     for i in range(N):
           measurements.append(quantum_random_number_generator(eng))
      # end engine
      eng.flush()
