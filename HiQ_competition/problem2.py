@@ -3,13 +3,13 @@
 
 # Huawei Quantum Programming Competition
 # Author: QuantumSupremacy Group
-
+# Github: https://github.com/Neuromancer43/Hello-Quantum/tree/master/HiQ_competition
 
 import numpy as np
 from scipy.optimize import minimize
 from projectq import MainEngine
 from projectq.ops import H, Rx, Ry, Rz, Measure, All, CNOT
-from projectq.cengines import (MainEngine,
+from projectq.cengines import (MainEngine, 
                                AutoReplacer,
                                LocalOptimizer,
                                TagRemover,
@@ -22,12 +22,7 @@ from hiq.projectq.backends import SimulatorMPI
 from hiq.projectq.cengines import GreedyScheduler, HiQMainEngine
 
 def bitstring(n):
-    if n > 1:
-        return ['0'+bits for bits in bitstring(n-1)]+['1'+bits for bits in bitstring(n-1)]
-    elif n == 1:
-        return ['0', '1']
-    else:
-        print('error')
+    return [bin(i)[2:].zfill(n) for i in range(2**n)]
 
 def parse_mapper(mapper):
     """
@@ -64,6 +59,19 @@ def reduce_connection(n,edges):
             degree_list[edge[1]]-=1
 
     return reduced_edges
+
+
+def pre_cal_param(eng,final_state,p,connections=None,N=80):
+    opt_cost=1
+    n = int(np.log2(len(final_state)))
+    for i in range(N):
+        rand_theta=np.array([np.pi*2*np.random.rand() for i in range(n*3*p)])
+        rand_cost=cost_func(rand_theta,final_state,p,eng,connections)
+        if rand_cost<opt_cost:
+            opt_cost=rand_cost
+            opt_param=rand_theta
+    return opt_param
+
 
 def cost_func(param, target_state, p, eng, connections=None):
     '''
