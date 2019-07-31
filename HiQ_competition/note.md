@@ -1,0 +1,1 @@
+1. Naive 38.2 Mean 38.6 Simpson Infinite 39.4

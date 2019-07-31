@@ -2,28 +2,7 @@ from projectq.ops import H, X, Z, Rx, Ry, Rz, Measure, QubitOperator, CNOT, All
 from projectq.meta import Loop, Compute, Uncompute, Control
 
 import numpy as np
-
-import projectq.setups.decompositions as rules
-
-from projectq.backends import Simulator
-
-from projectq.cengines import (AutoReplacer,
-                               LocalOptimizer,
-                               TagRemover,
-                               DecompositionRuleSet)
-
-from projectq import MainEngine
-
-backend = Simulator(gate_fusion=True)
-
-cache_depth = 10
-rule_set = DecompositionRuleSet(modules=[rules])
-engines = [TagRemover(), LocalOptimizer(cache_depth), AutoReplacer(rule_set), TagRemover(), LocalOptimizer(cache_depth)
-           ]
-
-engine = MainEngine(backend, engines)
-
-# ============================ header
+from scipy.optimize import minimize
 
 
 def bitstring(n):
@@ -33,6 +12,7 @@ def bitstring(n):
         return ['0', '1']
     else:
         print('error')
+
 
 def cost(param, target_state, p, eng):
     '''
@@ -67,6 +47,7 @@ def cost(param, target_state, p, eng):
 
     return 1-np.abs(count)
 # ===============================
+
 def check_solution(param,p,eng):
     n=int(len(param)/3/p)
     param=param.reshape((n,3*p))
@@ -93,13 +74,10 @@ def check_solution(param,p,eng):
 
 # ====================================
 
-from scipy.optimize import minimize
 
 def VQC(target_state,p, eng, method="COBYLA"):
-    p = 3
     n = int(np.log2(len(target_state)))
     param = np.ones((n, 3*p)).flatten()
-    result=minimize(cost,x0=param, args=(target_state,p,engine),method=method)#"TNC")#
+    result=minimize(cost,x0=param, args=(target_state,p,eng),method=method)#"TNC")#
     return result
-        
 
