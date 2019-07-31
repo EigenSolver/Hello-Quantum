@@ -78,12 +78,10 @@ def annealing(engine,M):
     state = engine.allocate_qureg(N)
     All(H) | state  # |+]
     
-    TimeEvolution(dt/2,H_0)|state
-    for j in range(1,M-1):
+
+    for j in range(M):
         TimeEvolution(j*dt**2/T,H_t)|state
         TimeEvolution(dt*(1-j*dt/T),H_0)|state
-    TimeEvolution(dt/2, H_t)|state
-
 
     engine.flush()
 
