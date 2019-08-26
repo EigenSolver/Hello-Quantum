@@ -29,6 +29,7 @@ for i in range(n):
     eng.flush()
     configs.append([int(qb) for qb in wave_function])
 
+
 print("10: ",configs.count([1,0]),"/",n)
 print("11: ",configs.count([1,1]),"/",n)
 print("00: ",configs.count([0,0]),"/",n)
